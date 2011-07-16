@@ -1,1 +1,68 @@
-Please use http://bitbucket.org/alexbilbie/codeigniter-mongo-library/overview instead - it's much more up to date!
+This is an active record inspired CodeIgniter library to integrate a MongoDB database into your application.
+
+Add the file Mongo_db.php to your /application/libraries folder.
+Add the file mongodb.php to your /application/config folder.
+
+Update the config file.
+
+You can now autoload the library or include it in one of your controllers at run time.
+
+You can interact with the database using many of the active record functions that CodeIgniter provides.
+
+	e.g.	$this->mongo_db->where_gte('age', 18)->where(array('country' => 'UK', 'can_drink' => TRUE))->get('people');
+	
+The result will be an array of documents.
+
+Last update - 13th September 2010
+
+
+= Select Functions =
+
+Select				Get select fields from returned documents
+Where				Where section of the query
+Where_in			Where something is in an array of something
+Where_in_all		Where something is in all of an array of something
+Where_not_in		Where something is not in array of something
+Where_gt			Where something is greater than something
+Where_gte			Where something is greater than or equal to something
+Where_lt			Where something is less than something
+Where_lte			Where something is less than or equal to something
+Where_not_equal		Where something is not equal to something
+Where_near			Where something is near to something (2d geospatial search)
+Order_by			Order the results
+Limit				Limit the number of returned results
+
+= Insert Function =
+
+Insert				Insert a new document into a collection
+
+= Update Functions =
+
+Update				Update a single document in a collection
+Update_all			Update all documents in a collection
+
+= Delete Functions =
+
+Delete				Delete a single document in a collection
+Delete_all			Delete all documents in a collection
+
+= Index Functions =
+set_index			Creates a new index
+delete_index		Deletes an index
+
+= Database Functions =
+drop_db				Drops a database
+switch_db			Switch to a different database
+
+= Collection Functions =
+drop_collection		Drops a collection
+
+= TODO =
+
+Map/reduce
+
+= Maybes =
+
+Add user
+Switch to user
+Remove user
