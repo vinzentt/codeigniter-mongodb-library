@@ -597,7 +597,17 @@ class Mongo_db {
 	 	
 	 	if (isset($this->wheres['_id']) and ! ($this->wheres['_id'] instanceof MongoId))
 		{
-			$this->wheres['_id'] = new MongoId($this->wheres['_id']);
+			if( is_array( $this->wheres['_id'][key($this->wheres['_id'])]) ){ // looks like case of IN or NIN
+				foreach($this->wheres['_id'][key($this->wheres['_id'])] as $i=>$id)
+				{
+					if( !($id instanceof MongoId) )
+					{
+						$this->wheres['_id'][key($this->wheres['_id'])][$i] = new MongoId($id);
+					}
+				}
+			}else{
+				$this->wheres['_id'] = new MongoId($this->wheres['_id']);
+			}
 		}
 	 		 	
 	 	$documents = $this->db->{$collection}->find($this->wheres, $this->selects)->limit((int) $this->limit)->skip((int) $this->offset)->sort($this->sorts);
