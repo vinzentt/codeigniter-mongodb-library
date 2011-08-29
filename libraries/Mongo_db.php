@@ -236,7 +236,7 @@ class Mongo_db {
 	*
 	*	Get the documents where the value of a $field may be something else
 	*
-	*	@usage : $this->mongo_db->or_where(array( array('foo'=>'bar', 'bar'=>'foo' ))->get('foobar');
+	*	@usage : $this->mongo_db->or_where(array('foo'=>'bar', 'bar'=>'foo'))->get('foobar');
 	*/
 	
 	public function or_where($wheres = array())
