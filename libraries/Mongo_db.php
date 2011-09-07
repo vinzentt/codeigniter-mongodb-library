@@ -619,7 +619,14 @@ class Mongo_db {
 	 	
 	 	while ($documents->hasNext())
 		{
-			$returns[] = (object) $documents->getNext();
+			if ($this->CI->config->item('mongo_return') == 'object')
+			{
+				$returns[] = (object) $documents->getNext();	
+			}
+			else 
+			{
+				$returns[] = (array) $documents->getNext();
+			}
 		}
 	 	
 	 	if ($this->CI->config->item('mongo_return') == 'object')
