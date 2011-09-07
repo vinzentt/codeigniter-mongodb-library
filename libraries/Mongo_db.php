@@ -4,14 +4,13 @@
  * CodeIgniter MongoDB Active Record Library
  *
  * A library to interface with the NoSQL database MongoDB. For more information see http://www.mongodb.org
- * Originally created by Alex Bilbie, but extended and updated by Kyle J. Dye
  *
  * @package		CodeIgniter
  * @author		Alex Bilbie | www.alexbilbie.com | alex@alexbilbie.com
  * @copyright	Copyright (c) 2010, Alex Bilbie.
  * @license		http://www.opensource.org/licenses/mit-license.php
  * @link		http://alexbilbie.com
- * @version		Version 0.4.5
+ * @version		Version 0.4.8
  *
  * Thanks to Kyle Dye (kyledye.com), Nick Jackson (nickjackson.me), Mikhail Kozlov (mikhailkozlov.com) and Phil Sturgeon (philsturgeon.co.uk) for additional help
  */
