@@ -68,6 +68,8 @@ class Mongo_db {
 	*	--------------------------------------------------------------------------------
 	*
 	*	Switch from default database to a different db
+	*
+	*	$this->mongo_db->switch_db('foobar');
 	*/
 	
 	public function switch_db($database = '')
@@ -584,7 +586,7 @@ class Mongo_db {
 	*
 	*	Get the documents based upon the passed parameters
 	*
-	*	@usage : $this->mongo_db->get('foo', array('bar' => 'something'));
+	*	@usage : $this->mongo_db->get('foo');
 	*/
 	
 	 public function get($collection = "")
@@ -647,7 +649,7 @@ class Mongo_db {
 	*
 	*	Count the documents based upon the passed parameters
 	*
-	*	@usage : $this->mongo_db->get('foo');
+	*	@usage : $this->mongo_db->count('foo');
 	*/
 	
 	public function count($collection = "") {
