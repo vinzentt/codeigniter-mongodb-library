@@ -281,7 +281,7 @@ class Mongo_db {
 	*
 	*	Get the documents where the value of a $field is in all of a given $in array().
 	*
-	*	@usage : $this->mongo_db->where_in('foo', array('bar', 'zoo', 'blah'))->get('foobar');
+	*	@usage : $this->mongo_db->where_in_all('foo', array('bar', 'zoo', 'blah'))->get('foobar');
 	*/
 	
 	public function where_in_all($field = "", $in = array())
@@ -419,7 +419,7 @@ class Mongo_db {
 	*
 	*	Get the documents where the value of a $field is not equal to $x
 	*
-	*	@usage : $this->mongo_db->where_not_equal('foo', 1)->get('foobar');
+	*	@usage : $this->mongo_db->where_ne('foo', 1)->get('foobar');
 	*/
 	
 	public function where_ne($field = '', $x)
@@ -507,7 +507,7 @@ class Mongo_db {
 	*	you must pass values of either -1, FALSE, 'desc', or 'DESC', else they will be
 	*	set to 1 (ASC).
 	*
-	*	@usage : $this->mongo_db->where_between('foo', 20, 30);
+	*	@usage : $this->mongo_db->order_by(array('foo' => 'ASC'))->get('foobar');
 	*/
 	
 	public function order_by($fields = array())
