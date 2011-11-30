@@ -527,6 +527,15 @@ class Mongo_db {
 	 	return ($this);
 	 }
 	 
+	 /**
+	*	--------------------------------------------------------------------------------
+	*	OR Like
+	*	--------------------------------------------------------------------------------
+	*	
+	*
+	*	@usage : $this->mongo_db->like('foo', 'bar', 'im', FALSE, TRUE);
+	*/
+	 
 	 public function or_like($fields = array(), $value = "", $flags = "i", $enable_start_wildcard = TRUE, $enable_end_wildcard = TRUE)
 	{
 		// $field = (string) trim($field);
@@ -547,7 +556,8 @@ class Mongo_db {
 	 	$regex = "/$value/$flags";
 		foreach ($fields as $field)
 		{
-			// $this->_where_init($field);
+			$this->_where_init($field);
+			$field = (string) trim($field);
 			$this->wheres['$or'][] =array($field => new MongoRegex($regex));
 		}
 	 	// $this->wheres[$field] = new MongoRegex($regex);
