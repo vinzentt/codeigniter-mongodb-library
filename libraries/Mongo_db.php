@@ -158,6 +158,35 @@ class Mongo_db {
 		return($this);
 	}
 	
+    
+    /*
+	*	--------------------------------------------------------------------------------
+	*	//! GridFs functions
+	*	--------------------------------------------------------------------------------
+    */
+    public function save_file_to_grid($filename="")
+    {
+        $grid = $this->db->getGridFS();
+        $file_id = $grid->storeFile($filename,array("chunkSize" => "2097152"));
+        return $file_id;
+    }
+    
+    public function read_file_from_grid($file_id)
+    {
+        $grid = $this->db->getGridFS();
+        $fichier = $grid->findOne(array('_id'=>$file_id));
+        $grid->update(array('_id'=>$file_id),array('$inc' => array('downloads'=>1)),array('upsert'=>1));
+        
+        $cursor = $grid->chunks->find(array("files_id" => $file_id))->sort(array("n" => 1));
+        
+        foreach($cursor as $chunk) 
+		{
+            echo $chunk['data']->bin;
+        
+        }
+
+    }
+    
 	/**
 	*	--------------------------------------------------------------------------------
 	*	//! Select
@@ -497,6 +526,33 @@ class Mongo_db {
 	 	$this->wheres[$field] = new MongoRegex($regex);
 	 	return ($this);
 	 }
+	 
+	 public function or_like($fields = array(), $value = "", $flags = "i", $enable_start_wildcard = TRUE, $enable_end_wildcard = TRUE)
+	{
+		// $field = (string) trim($field);
+	 	// $this->_where_init($field);
+	 	$value = (string) trim($value);
+	 	$value = quotemeta($value);
+	 	
+	 	if ($enable_start_wildcard !== TRUE)
+	 	{
+	 		$value = "^" . $value;
+	 	}
+	 	
+	 	if ($enable_end_wildcard !== TRUE)
+	 	{
+	 		$value .= "$";
+	 	}
+	 	
+	 	$regex = "/$value/$flags";
+		foreach ($fields as $field)
+		{
+			// $this->_where_init($field);
+			$this->wheres['$or'][] =array($field => new MongoRegex($regex));
+		}
+	 	// $this->wheres[$field] = new MongoRegex($regex);
+	 	return ($this);
+	}
 	
 	/**
 	*	--------------------------------------------------------------------------------
@@ -596,22 +652,26 @@ class Mongo_db {
 	 		show_error("In order to retreive documents from MongoDB, a collection name must be passed", 500);
 	 	}
 	 	
-	 	if (isset($this->wheres['_id']) and ! ($this->wheres['_id'] instanceof MongoId))
+	 	if (isset($this->wheres['_id']) and ! ($this->wheres['_id'] instanceof MongoId) )
 		{
-			if( is_array( $this->wheres['_id']) ){ // looks like case of IN or NIN
-				foreach($this->wheres['_id'][key($this->wheres['_id'])] as $i=>$id)
-				{
-					if( !($id instanceof MongoId) )
-					{
-						$this->wheres['_id'][key($this->wheres['_id'])][$i] = new MongoId($id);
-					}
-				}
-			}else{
-				$this->wheres['_id'] = new MongoId($this->wheres['_id']);
-			}
+			if(is_array($this->wheres['_id']))
+            {
+                
+                foreach($this->wheres['_id'] as $crit => $liste)
+                    {
+                        if(is_array($this->wheres['_id'][$crit]))
+                        foreach($this->wheres['_id'][$crit] as $idx=>$_mongoid)
+                        {
+                            if(! ($this->wheres['_id'][$crit][$idx] instanceof MongoId))
+								$this->wheres['_id'][$crit][$idx] = new MongoId($_mongoid);
+                        }
+                    }
+            }
+            else 
+                $this->wheres['_id'] = new MongoId($this->wheres['_id']);
 		}
-	 		 	
-	 	$documents = $this->db->{$collection}->find($this->wheres, $this->selects)->limit((int) $this->limit)->skip((int) $this->offset)->sort($this->sorts);
+	 	
+        $documents = $this->db->{$collection}->find($this->wheres, $this->selects)->limit((int) $this->limit)->skip((int) $this->offset)->sort($this->sorts);
 	 	
 	 	// Clear
 	 	$this->_clear();
@@ -620,23 +680,18 @@ class Mongo_db {
 	 	
 	 	while ($documents->hasNext())
 		{
-			if ($this->CI->config->item('mongo_return') == 'object')
-			{
-				$returns[] = (object) $documents->getNext();	
-			}
-			else 
-			{
-				$returns[] = (array) $documents->getNext();
-			}
+			$returns[] = (object) $documents->getNext();
 		}
 	 	
 	 	if ($this->CI->config->item('mongo_return') == 'object')
 		{
-			return (object)$returns;
+			
+            return (object)$returns;
 		}
 		
 		else
 		{
+            
 			return $returns;
 		}
 
@@ -778,6 +833,7 @@ class Mongo_db {
 		try
 		{
 			$options = array_merge($options, array($this->query_safety => TRUE, 'multiple' => FALSE));
+            
 			$this->db->{$collection}->update($this->wheres, $this->updates, $options);
 			$this->_clear();
 			return (TRUE);
@@ -971,16 +1027,16 @@ class Mongo_db {
 	{
 		$this->_update_init('$addToSet');
 		
-		if (is_string($values))
-		{
-			$this->updates['$addToSet'][$field] = $values;
-		}
 		
-		elseif (is_array($values))
+		if (is_array($values))
 		{
 			$this->updates['$addToSet'][$field] = array('$each' => $values);
 		}
-		
+		else 
+        {
+            $this->updates['$addToSet'][$field] = $values;
+        }
+        
 		return $this;
 	}
 	
